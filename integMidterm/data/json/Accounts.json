@@ -1,0 +1,60 @@
+{
+  "Accounts": [
+    {
+      "accountId": "ACC-ADMIN0001",
+      "username": "admin",
+      "password": "admin123",
+      "role": "ADMIN",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-72CF025C",
+      "username": "show",
+      "password": "owo123",
+      "role": "BUYER",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-A02BD8FA",
+      "username": "show_seller",
+      "password": "owo123",
+      "role": "SELLER",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-7A968717",
+      "username": "kalapastangan",
+      "password": "123456",
+      "role": "BUYER",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-85512DCD",
+      "username": "kalapastangan_seller",
+      "password": "changeme123",
+      "role": "SELLER",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-63E8E710",
+      "username": "dave",
+      "password": "dave",
+      "role": "BUYER",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-BA09D513",
+      "username": "Qwerty",
+      "password": "123456",
+      "role": "BUYER",
+      "status": "APPROVED"
+    },
+    {
+      "accountId": "ACC-58FCBBC1",
+      "username": "dave_seller",
+      "password": "changeme123",
+      "role": "SELLER",
+      "status": "APPROVED"
+    }
+  ]
+}
