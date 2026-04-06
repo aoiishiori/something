@@ -1,0 +1,53 @@
+{
+  "Products" : [ {
+    "productId" : "PRD-22F323CE",
+    "sellerUsername" : "shoow_seller",
+    "name" : "Canned Goods 150g",
+    "category" : "Canned Goods",
+    "originalPrice" : 45.0,
+    "discountedPrice" : 42.5,
+    "availableQuantity" : 498,
+    "expiryDate" : "2027-12-31",
+    "status" : "AVAILABLE"
+  }, {
+    "productId" : "PRD-F26B7BE6",
+    "sellerUsername" : "dave_seller",
+    "name" : "Bread",
+    "category" : "Bread",
+    "originalPrice" : 11.0,
+    "discountedPrice" : 9.0,
+    "availableQuantity" : 13,
+    "expiryDate" : "2026-02-21",
+    "status" : "AVAILABLE"
+  }, {
+    "productId" : "PRD-759EF97F",
+    "sellerUsername" : "kalapastangan_seller",
+    "name" : "Chips",
+    "category" : "Snacks",
+    "originalPrice" : 10.0,
+    "discountedPrice" : 14.0,
+    "availableQuantity" : 22,
+    "expiryDate" : "dhsdh",
+    "status" : "AVAILABLE"
+  }, {
+    "productId" : "PRD-B2864FD2",
+    "sellerUsername" : "dave_seller",
+    "name" : "Bread 2",
+    "category" : "Bakery",
+    "originalPrice" : 30.0,
+    "discountedPrice" : 25.0,
+    "availableQuantity" : 99,
+    "expiryDate" : "2026-02-23",
+    "status" : "AVAILABLE"
+  }, {
+    "productId" : "PRD-95A996D2",
+    "sellerUsername" : "show_seller",
+    "name" : "Sprite",
+    "category" : "Beverage",
+    "originalPrice" : 0.0,
+    "discountedPrice" : 55.0,
+    "availableQuantity" : 5,
+    "expiryDate" : "2029-05-21",
+    "status" : "AVAILABLE"
+  } ]
+}
