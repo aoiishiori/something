@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package wordy;
+
+option java_package = "com.team2.wordy.proto";
+option java_outer_classname = "AuthProto";
+option java_multiple_files = true;
+
+// ─────────────────────────────────────────────
+//  AUTH SERVICE
+//  Handles player/admin login and logout.
+// ─────────────────────────────────────────────
+
+service AuthService {
+
+  // Player or admin login.
+  // Server checks credentials against MySQL and enforces single-session.
+  rpc Login (LoginRequest) returns (LoginResponse);
+
+  // Logout the currently authenticated session.
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+}
+
+// ── Login ──────────────────────────────────────
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;   // plaintext from client; server hashes and compares
+}
+
+message LoginResponse {
+  bool   success  = 1;
+  string message  = 2;   // e.g. "Login successful", "Invalid credentials",
+                         //      "Account already logged in — previous session disconnected"
+  string role     = 3;   // "PLAYER" | "ADMIN"  (empty on failure)
+  string token    = 4;   // session token issued by server (empty on failure)
+}
+
+// ── Logout ─────────────────────────────────────
+
+message LogoutRequest {
+  string token = 1;      // session token issued at login
+}
+
+message LogoutResponse {
+  bool   success = 1;
+  string message = 2;    // e.g. "Logged out successfully"
+}
