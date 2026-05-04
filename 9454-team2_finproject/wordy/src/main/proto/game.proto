@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package wordy;
+
+option java_package = "com.team2.wordy.proto";
+option java_outer_classname = "GameProto";
+option java_multiple_files = true;
+
+// ─────────────────────────────────────────────
+//  GAME SERVICE
+//  Manages the full lifecycle of a Wordy game:
+//  matchmaking → rounds → scoring → results.
+// ─────────────────────────────────────────────
+
+service GameService {
+
+  // Player requests to start/join a game session.
+  // Server waits up to `join_wait_seconds` for a second player.
+  // Returns immediately with a WAITING or STARTED status.
+  rpc StartGame (StartGameRequest) returns (StartGameResponse);
+
+  // Bidirectional stream that drives the entire game loop:
+  //   Server → Client : letter sets, round results, game over
+  //   Client → Server : word submissions
+  // One stream per player per game session.
+  rpc PlayGame (stream GameClientMessage) returns (stream GameServerMessage);
+
+  // Retrieve the leaderboard (top 5 wins + top longest words).
+  // Used by the "View Top Players" home-screen option.
+  // Member 6 implements server side; Member 4 displays it.
+  rpc GetTopPlayers (GetTopPlayersRequest) returns (GetTopPlayersResponse);
+}
+
+// ── StartGame ──────────────────────────────────
+
+message StartGameRequest {
+  string token = 1;      // session token from AuthService
+}
+
+message StartGameResponse {
+  bool   success    = 1;
+  string message    = 2; // "Waiting for players…" | "Game started!" | error text
+  string session_id = 3; // unique game-session ID (empty if failed)
+}
+
+// ── PlayGame (bidirectional stream) ────────────
+//
+//  Client sends GameClientMessage  →  server
+//  Server sends GameServerMessage  →  all players in session
+
+message GameClientMessage {
+  string token      = 1; // session token (sent with every message)
+  string session_id = 2; // which game session this belongs to
+
+  oneof payload {
+    JoinSessionPayload  join_session  = 3; // sent once right after StartGame succeeds
+    WordSubmitPayload   word_submit   = 4; // player submitting a word
+  }
+}
+
+message JoinSessionPayload {
+  // intentionally empty — token + session_id are sufficient
+}
+
+message WordSubmitPayload {
+  string word         = 1; // the word the player is submitting
+  int32  round_number = 2;
+}
+
+// ── GameServerMessage ──────────────────────────
+//  All event types the server can push to clients.
+
+message GameServerMessage {
+  oneof event {
+    WaitingEvent      waiting       = 1; // still waiting for another player
+    RoundStartEvent   round_start   = 2; // new round — here are the letters
+    WordResultEvent   word_result   = 3; // feedback on a submitted word
+    RoundEndEvent     round_end     = 4; // round finished — here's who won
+    GameOverEvent     game_over     = 5; // someone reached 3 wins
+    ErrorEvent        error         = 6; // generic error (e.g. session expired)
+  }
+}
+
+message WaitingEvent {
+  int32  seconds_remaining = 1; // countdown until join window closes
+}
+
+message RoundStartEvent {
+  int32           round_number     = 1;
+  repeated string letters          = 2; // exactly 20 letters (5–7 are vowels)
+  int32           duration_seconds = 3; // how long players have to submit
+}
+
+message WordResultEvent {
+  string word      = 1;
+  bool   valid     = 2;  // false → word is too short or not in words.txt
+  string message   = 3;  // "Valid word!", "Invalid word — too short", etc.
+}
+
+message RoundEndEvent {
+  int32  round_number  = 1;
+  string winner        = 2; // username of round winner; empty string = no winner (tie / no valid words)
+  string winning_word  = 3; // the longest valid word that won the round
+  // Current round-win totals for all players in this session
+  repeated PlayerScore scores = 4;
+}
+
+message GameOverEvent {
+  string overall_winner = 1; // username of the player who reached 3 round wins
+  string message        = 2; // closing message shown to all players
+}
+
+message ErrorEvent {
+  string message = 1;
+}
+
+// ── Shared sub-messages ────────────────────────
+
+message PlayerScore {
+  string username    = 1;
+  int32  round_wins  = 2;
+}
+
+// ── GetTopPlayers ──────────────────────────────
+
+message GetTopPlayersRequest {
+  string token = 1;  // any authenticated session token
+}
+
+message GetTopPlayersResponse {
+  // Top 5 players ranked by total game wins (all-time)
+  repeated TopWinEntry   top_winners      = 1;
+  // Top 5 longest words ever submitted in any round
+  repeated TopWordEntry  top_words        = 2;
+}
+
+message TopWinEntry {
+  string username  = 1;
+  int32  win_count = 2;
+}
+
+message TopWordEntry {
+  string word        = 1;
+  int32  word_length = 2;
+  string submitted_by = 3;
+}
